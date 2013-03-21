@@ -34,9 +34,9 @@ public:
 //	static b2Body* createBox(b2World* world,float posX,float posY,float boxWidth,float boxHeight,bool isStatic);
 //	static b2Body* createBox(b2World* world,float posX,float posY,float boxWidth,float boxHeight,bool isStatic,float angle);
 	static b2Body* createBox(b2World* world,float posX,float posY,float boxWidth,float boxHeight,bool isStatic,
-		float angle=0,float density=1,float friction=0.3f,float restitution=0.0f);
+		float angle=0,float density=1,float friction=0.3f,float restitution=0.0f,b2Filter *filter=NULL);
 	static b2Body* createCircle(b2World *world, float posX, float posY, float radius, bool isStatic=false,void *userData=NULL
-		,float density=10,float friction=0.3f,float restitution=0.0f,bool isRotation=false);
+		,float density=10,float friction=0.3f,float restitution=0.0f,bool isRotation=false,b2Filter *filter=NULL);
 	static void shrinkBox(b2Body* body,float32 width,float32 height,float32 scale);
 
 };

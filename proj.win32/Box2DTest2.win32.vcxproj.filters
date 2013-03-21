@@ -88,6 +88,12 @@
     <ClInclude Include="..\Classes\RandomBy.h">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Constant.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MyDestructionListener.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -121,6 +127,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\RandomBy.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MyDestructionListener.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

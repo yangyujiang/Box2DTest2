@@ -82,7 +82,7 @@ b2Body* B2EasyBox2D::createBox(b2World* world,float posX,float posY,float boxWid
 	return B2EasyBox2D::createBox(world,posX,posY,boxWidth,boxHeight,isStatic,angle,3.f,0.3f,0.3f);
 }*/
 b2Body* B2EasyBox2D::createBox(b2World* world,float posX,float posY,float boxWidth,float boxHeight,bool isStatic,
-	float angle,float density,float friction,float restitution){
+	float angle,float density,float friction,float restitution,b2Filter *filter){
 
 	b2BodyDef bodyRequest;
 	if(!isStatic) bodyRequest.type=b2_dynamicBody;
@@ -97,7 +97,7 @@ b2Body* B2EasyBox2D::createBox(b2World* world,float posX,float posY,float boxWid
 	if(!isStatic) fixtureRequest.density=density;
 	fixtureRequest.friction=friction;
 	fixtureRequest.restitution=restitution;
-
+	if(filter!=NULL) fixtureRequest.filter=*filter;
 	b2Fixture *fixture=body->CreateFixture(&fixtureRequest);
 
 	return body;
@@ -134,7 +134,7 @@ void B2EasyBox2D::shrinkBox(b2Body* body,float32 width,float32 height,float32 sc
 		 * @return 返回一个圆形刚体
 		 */
 b2Body* B2EasyBox2D::createCircle(b2World *world, float posX, float posY, float radius, bool isStatic,void *userData
-	,float density,float friction,float restitution,bool isRotation) {
+	,float density,float friction,float restitution,bool isRotation,b2Filter *filter) {
 			//1.创建刚体需求b2BodyDef
 			b2BodyDef bodyRequest;
 			if(!isStatic) bodyRequest.type=b2_dynamicBody;
@@ -162,6 +162,7 @@ b2Body* B2EasyBox2D::createCircle(b2World *world, float posX, float posY, float 
 			fixtureRequest.friction = friction;
 			fixtureRequest.restitution = restitution;
 			fixtureRequest.shape = &shapeCircle;
+		if(filter!=NULL)	fixtureRequest.filter=*filter;
 			
 			//4.b2Body刚体工厂根据需求CreateFixture生产形状			
 			circle->CreateFixture(&fixtureRequest);

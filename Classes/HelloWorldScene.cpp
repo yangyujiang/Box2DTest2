@@ -3,6 +3,9 @@
 #include "B2EasyBox2D.h"
 #include "math.h"
 #include "string"
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)   
+#include "vld.h"   
+#endif  
 
 #define PTM_RATIO 32.0f //Box2D世界与屏幕坐标的换算比例，1米=32像素点
 
@@ -29,11 +32,11 @@ CCScene* HelloWorld::scene()
     return scene;
 }
 
-HelloWorld::HelloWorld(){
+HelloWorld::HelloWorld():contactListener(NULL){
 	this->resinBallBody=new ResinBallBody();
 }
 HelloWorld::~HelloWorld(){
-	this->resinBallBody->~ResinBallBody();
+	CC_SAFE_DELETE(resinBallBody);
 }
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
@@ -102,7 +105,9 @@ bool HelloWorld::init()
 
 		//Box2D///////////////////////////////////////////
 		this->createWorld();
-		this->createDebugDraw();
+		this->registerContactListener();
+
+	//	this->createDebugDraw();
 		this->createWrapWall();
 	//	this->createRigidCircle(20,20);
 	//	this->createRigidCircle(22,30);
@@ -129,11 +134,35 @@ b2Body* body = _world->CreateBody(&bodyDef);
 
 b2CircleShape bodyShap;
 bodyShap.m_radius=sprite->getContentSize().width/2.0f/PTM_RATIO;
-body->CreateFixture(&bodyShap,5.0f);
+b2FixtureDef fixtureDef;
+b2Filter filter;
+filter.groupIndex=2;
+fixtureDef.filter=filter;
+fixtureDef.shape=&bodyShap;
+body->CreateFixture(&fixtureDef);
+
+CCSprite* sprite2=CCSprite::create("CloseNormal.png");
+		sprite2->setPosition(ccp(250,150));
+		addChild(sprite2);
+
+b2BodyDef bodyDef2;
+bodyDef2.type = b2_dynamicBody;
+bodyDef2.position.Set(250/PTM_RATIO, 150/PTM_RATIO);
+bodyDef2.userData=sprite2;
+b2Body* body2 = _world->CreateBody(&bodyDef2);
+
+b2CircleShape bodyShap2;
+bodyShap2.m_radius=sprite2->getContentSize().width/2.0f/PTM_RATIO;
+b2FixtureDef fixtureDef2;
+b2Filter filter2;
+filter2.groupIndex=2;
+fixtureDef2.filter=filter2;
+fixtureDef2.shape=&bodyShap2;
+body2->CreateFixture(&fixtureDef2);
 
 b2Vec2 force = b2Vec2(10, 10);
 		//body->ApplyLinearImpulse(force, bodyDef.position);
-body->ApplyForceToCenter(b2Vec2(109,109));
+//body->ApplyForceToCenter(b2Vec2(109,109));
 		this->schedule(schedule_selector(HelloWorld::tick));
 		this->schedule(schedule_selector(HelloWorld::changeXYZShow),1);
 
@@ -141,6 +170,15 @@ body->ApplyForceToCenter(b2Vec2(109,109));
     } while (0);
 
     return bRet;
+}
+
+void HelloWorld::registerContactListener(){
+	contactListener;//=new myContactListener();
+	_world->SetContactListener(contactListener);
+}
+
+void HelloWorld::unregisterContactListener(){
+	//_world->ContactListener(contactListener);
 }
 
 void HelloWorld::initInsects(){
@@ -222,19 +260,42 @@ void HelloWorld::createRigidCircle(int segmentNum,int radius){
 	}
 }
 
+
 void HelloWorld::draw(){
 	this->drawResin();
 }
-
+void drawSolidCircle(const CCPoint& center,float radius,unsigned int segments,ccColor4F color)  
+    {  
+        const float coef = 2.0f * (float)M_PI/segments;  
+        CCPoint *vertices=(CCPoint*)calloc(segments+1,sizeof(CCPoint));  
+  
+        for(unsigned int i = 0;i <= segments; i++) {  
+            float rads = i*coef;  
+            GLfloat j = radius * cosf(rads)  + center.x;  
+            GLfloat k = radius * sinf(rads)  + center.y;  
+            vertices[i].x=j;  
+            vertices[i].y=k;  
+        }  
+        ccDrawSolidPoly( vertices, segments,color);  
+        free(vertices);  
+    }  
 void HelloWorld::drawResin(){//画出树脂球形状
 	CCPoint filledVertives[100];//={ccp(100,100),ccp(500,100),ccp(500,500),ccp(250,250),ccp(100,500)};
 	for(int i=0;i<this->resinBallBody->_blockJoints.size();i++){
 		filledVertives[i]=ccp(this->resinBallBody->_blockJoints[i]->GetAnchorA().x*PTM_RATIO,
 			this->resinBallBody->_blockJoints[i]->GetAnchorA().y*PTM_RATIO);
 	}
-	ccDrawColor4B(255,0,0,255);//设置颜色为蓝色
- 	ccDrawSolidPoly(filledVertives,this->resinBallBody->_blockJoints.size(),ccc4f(0,0,255,255));
-	//free(filledVertives);
+	
+ 	ccDrawSolidPoly(filledVertives,this->resinBallBody->_blockJoints.size(),ccc4f(255,140,0,255));
+	
+	ccDrawColor4B(255,69,0,255);
+	b2Body *ballBody=resinBallBody->_ballBody;
+	ccDrawCircle(ccp(ballBody->GetWorldCenter().x*PTM_RATIO,ballBody->GetWorldCenter().y*PTM_RATIO),
+		ballBody->GetFixtureList()->GetShape()->m_radius*PTM_RATIO,M_PI_2,50,false);
+	//ccPointSize(ballBody->GetFixtureList()->GetShape()->m_radius*PTM_RATIO);
+	ccDrawPoint(ccp(ballBody->GetWorldCenter().x*PTM_RATIO,ballBody->GetWorldCenter().y*PTM_RATIO));
+	drawSolidCircle(ccp(ballBody->GetWorldCenter().x*PTM_RATIO,ballBody->GetWorldCenter().y*PTM_RATIO),
+		ballBody->GetFixtureList()->GetShape()->m_radius*PTM_RATIO,50,ccc4f(255,0,0,1));
 }
 
 void HelloWorld::createRopeJoint(int number){
@@ -252,7 +313,7 @@ void HelloWorld::createRopeJoint(int number){
 		ropeRequest.localAnchorA=b2Vec2(0,0);
 		ropeRequest.localAnchorB=anchorB;
 		ropeRequest.maxLength=(atob_radius-b_radius)*2;
-		CCLog("m_radius:%f,atob:%f",b_radius,atob_radius);
+	//	CCLog("m_radius:%f,atob:%f",b_radius,atob_radius);
 		_world->CreateJoint(&ropeRequest);
 	}
 }
@@ -352,7 +413,7 @@ void HelloWorld::didAccelerateFor(b2Body* body,double x,double y,double z){
 	float32 u=0.1f;//body->GetFixtureList()->GetFriction();//body实心圆的摩擦系数
 	float32 g=10;//重力系数
 	float32 G=150;//body->GetMass()*g;//body的重力（牛顿N）
-	CCLog("resinball.G:%f",G);
+//	CCLog("resinball.G:%f",G);
 	float32 zz=b2Vec2(x,y).Length();
 	float32 F=G*zz;//动力
 	float32 f=fabs(u*G*z);//摩擦力
@@ -422,9 +483,11 @@ void HelloWorld::tick(float dt){
 	for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) { 
 		if (b->GetUserData() != NULL) {
 			CCSprite *sprite = (CCSprite *)b->GetUserData(); 
+			if(sprite->getTag()!=3){
 			sprite->setPosition(ccp(b->GetPosition().x * PTM_RATIO,
 			b->GetPosition().y * PTM_RATIO));
 			sprite->setRotation(-1* CC_RADIANS_TO_DEGREES(b->GetAngle()));
+			}
 		}
 	}
 }

@@ -29,14 +29,16 @@ public:
 	void accelerateCallBack(cocos2d::CCAcceleration* pAccelerationValue);//加速器变化时（倾斜手机屏幕）的回调函数
 };
 
-class ResinBall : public cocos2d::CCSprite
+class ResinBall : public cocos2d::CCNode
 {
 protected:
 	ResinBallBody* _resinBallBody;//树脂球模型刚体
+	cocos2d::CCSprite *_resinBallSprite;//外衣
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
-  //  virtual bool init();  
-	ResinBall();
+    virtual bool init();  
+	CREATE_FUNC(ResinBall);
+	ResinBall():_resinBallSprite(NULL),_resinBallBody(NULL){};
 	virtual ~ResinBall();
 	/*
     // there's no 'id' in cpp, so we recommand to return the exactly class pointer
@@ -67,7 +69,7 @@ public:
 	void didAccelerate(cocos2d::CCAcceleration* pAccelerationValue);
 	*/
     // implement the "static node()" method manually
-   // CREATE_FUNC(HelloWorld);
+   // 
 };
 
 

@@ -11,6 +11,7 @@
 
 #include "ResinBall.h"
 #include "Insect.h"
+#include "myContactListener.h"
 
 class HelloWorld : public cocos2d::CCLayer
 {
@@ -28,11 +29,15 @@ protected:
 
 	ResinBallBody* resinBallBody;//主角的刚体
 	vector<Insect*> _insects;//虫子
+
+	myContactListener *contactListener;
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init(); 
 	HelloWorld();
 	virtual ~HelloWorld();
+	void registerContactListener();
+	void unregisterContactListener();
 
     // there's no 'id' in cpp, so we recommand to return the exactly class pointer
     static cocos2d::CCScene* scene();

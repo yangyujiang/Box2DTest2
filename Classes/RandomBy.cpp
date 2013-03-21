@@ -56,7 +56,8 @@ void CCRandomBy::startWithTarget(CCNode *pTarget)
 }
 
 void CCRandomBy::update(float time)
-{CCLog("running");
+{
+	//CCLog("running");
     if (m_pTarget)
     {
 		if(time*m_fDuration-_preChangeTime>1){
@@ -71,7 +72,7 @@ void CCRandomBy::update(float time)
 			//if(newAngle>180) newAngle=360-newAngle;
 			//if(newAngle<-180) newAngle=360+newAngle;
 			m_pTarget->setRotation(newAngle);//设置新的角度
-			CCLog("newAngle:%f",newAngle);
+	//		CCLog("newAngle:%f",newAngle);
 		case 0:
 			double degree=(m_pTarget->getRotation()-90)/180*M_PI;
 			double distance=m_velocity*(m_fDuration*time-_countTime);
@@ -79,9 +80,9 @@ void CCRandomBy::update(float time)
 			CCPoint newPosition=ccp(m_startPosition.x + m_delta.x ,m_startPosition.y + m_delta.y);
 			m_pTarget->setPosition(newPosition);
 			m_startPosition=newPosition;
-			CCLog("(%f)",distance);
-			CCLog("degree:%f",degree);
-			CCLog("(%f,%f)",m_delta.x,m_delta.y);
+		//	CCLog("(%f)",distance);
+		//	CCLog("degree:%f",degree);
+		//	CCLog("(%f,%f)",m_delta.x,m_delta.y);
 			_countTime=m_fDuration*time;
 			break;
 		}//switch

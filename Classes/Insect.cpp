@@ -4,6 +4,7 @@
 #include "HelloWorldScene.h"
 #include "B2EasyBox2D.h"
 #include "myContactListener.h"
+#include "Constant.h"
 
 #define PTM_RATIO 32.0
 
@@ -28,6 +29,7 @@ bool Insect::init(){
 		CC_BREAK_IF(!_sprite);
 		_sprite->retain();
 		_sprite->setPosition(ccp(100,300));
+		_sprite->setTag(3);
 		this->addChild(_sprite,0);
 
 		_randomAction=InsectAction::createRandomAction(_velocity);
@@ -90,9 +92,9 @@ bool Insect::boundsChecking(){
 	else if(_sprite->getPositionX()>=winSize.width) x=winSize.width-1;
 	if(_sprite->getPositionY()<=0) y=1;
 	else if(_sprite->getPositionY()>=winSize.height) y=winSize.height-1;
-	CCLog("(%f,%f)",winSize.width,winSize.height);
-	CCLog("(%f,%f)",_sprite->getPositionX(),_sprite->getPositionY());
-	CCLog("(%f,%f)",x,y);
+//	CCLog("(%f,%f)",winSize.width,winSize.height);
+//	CCLog("(%f,%f)",_sprite->getPositionX(),_sprite->getPositionY());
+//	CCLog("(%f,%f)",x,y);
 	if(x!=-1||y!=-1){
 		if(x==-1) x=point.x;
 		if(y==-1) y=point.y;
@@ -109,22 +111,22 @@ bool Insect::boundsChecking(){
 }
 
 void Insect::tick(float dt){
-	CCLog("%d,%f",this->boundsChecking(),dt);
+	this->boundsChecking();
 	b2Vec2 b2Position = b2Vec2(_sprite->getPositionX()/PTM_RATIO,
 		_sprite->getPositionY()/PTM_RATIO);
-	float32 b2Angle =-1* CC_DEGREES_TO_RADIANS(_sprite->getRotation());
+	float32 b2Angle =-1* CC_DEGREES_TO_RADIANS(_sprite->getRotation()-90);
 	_body->SetTransform(b2Position, b2Angle);
 }
 
 void Insect::createWorld(b2World* world){
-	/*_world=world;*/
-	if(_world!=NULL) return; 
+	_world=world;
+	/*if(_world!=NULL) return; 
 	bool doSleep = false;
 	//4.创建b2World世界
 	_world = new b2World(b2Vec2(0,0));
 	_world->SetAllowSleeping(doSleep);
 	myContactListener *lis=new myContactListener();
-	_world->SetContactListener(lis);
+	_world->SetContactListener(lis);*/
 }
 
 void Insect::createInsectBody(){
@@ -142,12 +144,12 @@ void Insect::createInsectBody(){
 
 	b2FixtureDef fixtureRequest;
 	fixtureRequest.shape=&shapeRequest;
-	fixtureRequest.isSensor=true;
+	//fixtureRequest.isSensor=true;
 
 	b2Filter filter;
-	filter.groupIndex=2;
-	filter.categoryBits=2;
-	filter.maskBits=2;
+	filter.groupIndex=k_insectGroup;
+	filter.categoryBits=k_insectCategory;
+	filter.maskBits=k_insectMask;
 
 	fixtureRequest.filter=filter;
 

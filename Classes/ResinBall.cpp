@@ -1,6 +1,7 @@
 ﻿#include "ResinBall.h"
 
 #include "B2EasyBox2D.h"
+#include "Constant.h"
 
 #define PTM_RATIO 32.0f //Box2D世界与屏幕坐标的换算比例，1米=32像素点
 
@@ -14,16 +15,20 @@ const float32 BLOCK_GRAVITY=0.8f;//每一个小方块的重力（N），固定�
 const float32 g=10;//模拟重力系数
 const float32 MAX_VELOCITY=18;//主角树脂球的最大速度（米/秒）
 
-ResinBall::ResinBall(void)
-{
-}
 
 
 ResinBall::~ResinBall(void)
 {
 }
 
+bool ResinBall::init(){
+	bool pRet=false;
+	do{
+		_resinBallBody=new ResinBallBody();
+	}while(0);
 
+	return pRet;
+}
 
 
 
@@ -46,16 +51,19 @@ bool ResinBallBody::init(b2World* world){
 		_world=world;
 		
 		const float32 radius=20;//实心圆半径
-		const float32 magnification=1.5f;//环形链半径比圆圆环的放大倍数
+		const float32 magnification=1.35f;//环形链半径比圆圆环的放大倍数
 
 	CCSize winSize=CCDirector::sharedDirector()->getWinSize();
 	float centerX = winSize.width / 2.f;
 	float centerY = winSize.height / 2.f;
 	_position=ccp(centerX,centerY);
-	CCLog("%f,%f",_position.x,_position.y);
+	CCLog("resinBallBody:%f,%f",_position.x,_position.y);
 	//this->createRigidCircle(24,radius*1.1f);
-	
-	_ballBody=B2EasyBox2D::createCircle(_world,centerX,centerY,radius,false,NULL,10.0f,0.8f,0,false);
+	b2Filter filter;
+	filter.groupIndex=k_resinBallBodyGroup;
+	filter.categoryBits=k_resinBallCircleCategory;
+	filter.maskBits=k_resinBallCircleMask;
+	_ballBody=B2EasyBox2D::createCircle(_world,centerX,centerY,radius,false,NULL,10.0f,0.8f,0,false,&filter);
 	_ballBody->SetBullet(true);
 	/*_body1=B2EasyBox2D::createCircle(_world,centerX-radius+3*radius/5.0f,centerY,radius*3/5.0f,false,NULL,10.0f,0.8f,0,false);
 	_body1->SetBullet(true);
@@ -78,9 +86,9 @@ b2Joint* createRevoluteJoint(b2World* world,b2Body* body1,b2Body* body2,b2Vec2 a
 		revoluteJoint.upperAngle=LIMIT_ANGLE;
 		revoluteJoint.enableLimit=true;
 		//开启马达
-		revoluteJoint.enableMotor = true;
+		revoluteJoint.enableMotor = false;
 		//设置马达的最大角速度，单位为 弧度/秒，如设置为Math.PI，即每秒钟转180度
-		revoluteJoint.motorSpeed =1;
+		revoluteJoint.motorSpeed =10;
 		revoluteJoint.maxMotorTorque = 500;//设置最大的扭力值
 		return world->CreateJoint(&revoluteJoint);
 }
@@ -99,12 +107,17 @@ void ResinBallBody::createCircleBridge(int number,float32 radius){//根据圆环
 	double by = r_small * sin(angle)+_position.y;
 	
 	b2Body *firstBody=B2EasyBox2D::createBox(_world,bx,by,segmentWidth,segmentHeight,false,angle,1.0f,1.f,0.0f);
+	//firstBody->SetBullet(true);
 	_blocks.push_back(firstBody);//存入_blocks数组中
 
 	b2Body *body;//当前body
 	b2Body *preBody=firstBody;//上一个body
 
 	//for循环创建number个线段，合成圆形边界
+	b2Filter filter;
+	filter.groupIndex=k_blocksGroup;
+	filter.categoryBits=k_blocksCategory;
+	filter.maskBits=k_blocksMask;
 	for (i = 1; i < number; i++) {
 		//计算每个线段的角度、坐标
 		angle = i*1.f/number *b2_pi*2;
@@ -112,9 +125,9 @@ void ResinBallBody::createCircleBridge(int number,float32 radius){//根据圆环
 		float by = r_small * sin(angle)+_position.y;
 
 		//创建有方向的矩形刚体，合成总的圆形刚体
-		body=B2EasyBox2D::createBox(_world,bx,by,segmentWidth,segmentHeight,false,angle,1.0f,1.f,0.0f);
+		body=B2EasyBox2D::createBox(_world,bx,by,segmentWidth,segmentHeight,false,angle,1.0f,1.f,0.0f,&filter);
+		//body->SetBullet(true);
 		_blocks.push_back(body);//存入_blocks数组中
-
 		//定义节点，两小方块相交处点坐标的公式为（r*cos(0.5*2*pi/n+k*2*pi/n),r*sin(0.5*2*pi/n+k*2*pi/n)）+centerXY
 		b2Vec2 anchor=b2Vec2((radius*cos((2*i-1)*alta)+_position.x)/PTM_RATIO,(radius*sin((2*i-1)*alta)+_position.y)/PTM_RATIO);		
 		b2Joint* revoluteJoint=createRevoluteJoint(_world,preBody,body,anchor);//创建旋转关节
@@ -157,9 +170,12 @@ void ResinBallBody::accelerateCallBack(CCAcceleration* pAccelerationValue){//加
 		b2Vec2 nowVelocity=_blocks[i]->GetLinearVelocity();
 		float32 V=nowVelocity.Length();//当前小方块的速度
 		b2Vec2 force=b2Vec2(-nowVelocity.x*f/V,-nowVelocity.y*f/V);//得到摩擦力向量与当前速度反向,所以加负号
-		if(V>0){//如果当前速度不为0才施加反向摩擦力；否则不施加力
+		if(V>1){//如果当前速度不为0才施加反向摩擦力；否则不施加力
 			_blocks[i]->ApplyForceToCenter(force);
-		}else _blocks[i]->ApplyForceToCenter(b2Vec2(0,0));
+		}else{
+			_blocks[i]->ApplyForceToCenter(b2Vec2(0,0));
+			_blocks[i]->SetLinearVelocity(b2Vec2(0,0));
+		}
 	}
 }
 

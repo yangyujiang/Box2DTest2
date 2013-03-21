@@ -1,0 +1,57 @@
+﻿生成启动时间为 2013/3/21 10:25:31。
+     1>项目“D:\cocos2d-x\Projects\Box2DTest2\Box2DTest2\proj.win32\Box2DTest2.win32.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在对“Debug.win32\Box2DTest2.win32.unsuccessfulbuild”执行 Touch 任务。
+       ClCompile:
+         D:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /I..\Classes /I"D:\cocos2d-x\Projects\Box2DTest2\cocos2dx" /I"D:\cocos2d-x\Projects\Box2DTest2\cocos2dx\include" /I"D:\cocos2d-x\Projects\Box2DTest2\cocos2dx\kazmath\include" /I"D:\cocos2d-x\Projects\Box2DTest2\cocos2dx\platform\win32" /I"D:\cocos2d-x\Projects\Box2DTest2\cocos2dx\platform\third_party\win32" /I"D:\cocos2d-x\Projects\Box2DTest2\cocos2dx\platform\third_party\win32\OGLES" /I"D:\cocos2d-x\Projects\Box2DTest2\external" /I"D:\cocos2d-x\Projects\Box2DTest2\CocosDenshion\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS_DEBUG /D COCOS2D_DEBUG=1 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc100.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\Insect.cpp ..\Classes\InsectAction.cpp ..\Classes\myContactListener.cpp ..\Classes\RandomBy.cpp
+         RandomBy.cpp
+     1>d:\cocos2d-x\projects\box2dtest2\box2dtest2\classes\randomby.h(25): warning C4305: “初始化”: 从“double”到“const float”截断
+         myContactListener.cpp
+         InsectAction.cpp
+     1>d:\cocos2d-x\projects\box2dtest2\box2dtest2\classes\randomby.h(25): warning C4305: “初始化”: 从“double”到“const float”截断
+         Insect.cpp
+         正在生成代码...
+       ResourceCompile:
+         所有输出均为最新。
+       ManifestResourceCompile:
+         所有输出均为最新。
+       Link:
+         D:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\Box2DTest2.win32.exe" /INCREMENTAL /NOLOGO /LIBPATH:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\\" libcocos2d.lib libExtensions.lib opengl32.lib glew32.lib libBox2d.lib libCocosDenshion.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug.win32\Box2DTest2.win32.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\Box2DTest2.win32.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\Box2DTest2.win32.lib" /MACHINE:X86 Debug.win32\Box2DTest2.res
+         Debug.win32\Box2DTest2.win32.exe.embed.manifest.res
+         Debug.win32\AppDelegate.obj
+         Debug.win32\B2DebugDrawLayer.obj
+         Debug.win32\B2EasyBox2D.obj
+         "Debug.win32\GLES-Render.obj"
+         Debug.win32\HelloWorldScene.obj
+         Debug.win32\Insect.obj
+         Debug.win32\InsectAction.obj
+         Debug.win32\myContactListener.obj
+         Debug.win32\RandomBy.obj
+         Debug.win32\ResinBall.obj
+         Debug.win32\main.obj
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug.win32\Box2DTest2.win32.exe.embed.manifest" /manifest Debug.win32\Box2DTest2.win32.exe.intermediate.manifest
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug.win32\Box2DTest2.win32.exe.embed.manifest.res" Debug.win32\Box2DTest2.win32_manifest.rc 
+       LinkEmbedManifest:
+         D:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\Box2DTest2.win32.exe" /INCREMENTAL /NOLOGO /LIBPATH:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\\" libcocos2d.lib libExtensions.lib opengl32.lib glew32.lib libBox2d.lib libCocosDenshion.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug.win32\Box2DTest2.win32.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\Box2DTest2.win32.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\Box2DTest2.win32.lib" /MACHINE:X86 Debug.win32\Box2DTest2.res
+         Debug.win32\Box2DTest2.win32.exe.embed.manifest.res
+         Debug.win32\AppDelegate.obj
+         Debug.win32\B2DebugDrawLayer.obj
+         Debug.win32\B2EasyBox2D.obj
+         "Debug.win32\GLES-Render.obj"
+         Debug.win32\HelloWorldScene.obj
+         Debug.win32\Insect.obj
+         Debug.win32\InsectAction.obj
+         Debug.win32\myContactListener.obj
+         Debug.win32\RandomBy.obj
+         Debug.win32\ResinBall.obj
+         Debug.win32\main.obj
+         Box2DTest2.win32.vcxproj -> D:\cocos2d-x\Projects\Box2DTest2\Debug.win32\Box2DTest2.win32.exe
+       FinalizeBuildStatus:
+         正在删除文件“Debug.win32\Box2DTest2.win32.unsuccessfulbuild”。
+         正在对“Debug.win32\Box2DTest2.win32.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“D:\cocos2d-x\Projects\Box2DTest2\Box2DTest2\proj.win32\Box2DTest2.win32.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:12.68
